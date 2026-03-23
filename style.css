@@ -260,19 +260,3 @@ body.dark-mode .parallax > use:nth-child(3) {
     transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     width: 220px; /* Adjusted size to fit more */
 }
-
-.glass-announcement {
-  /* ... keep your existing styles ... */
-  transform-style: preserve-3d; /* Required for the 3D pop effect */
-  perspective: 1000px;
-}
-
-/* This makes the text "pop out" from the glass when tilting */
-.announcement-content {
-  transform: translateZ(50px); 
-}
-
-/* Optional: Make the glare follow the mouse smoothly */
-.js-tilt-glare {
-  border-radius: 25px; /* Match your container's roundness */
-}
