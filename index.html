@@ -55,8 +55,8 @@
   <!-- Track Info -->
   <div class="details">
     <div class="track-art"></div>
-    <div class="track-name">Track Title</div>
-    <div class="track-artist">Artist Name</div>
+    <div class="track-name">Fame Is A Gun</div>
+    <div class="track-artist">Addison Rae</div>
   </div>
 
   <!-- Progress Bar & Time -->
@@ -141,52 +141,65 @@ document.querySelectorAll('.polaroid').forEach(item => {
     item.addEventListener('mouseenter', () => heart.style.fontSize = "40px");
     item.addEventListener('mouseleave', () => heart.style.fontSize = "24px");
 });
-    const audio = document.getElementById('main-audio');
+   const audio = document.getElementById('main-audio');
 const playBtn = document.getElementById('playpause-btn');
-const seekSlider = document.getElementById('seek-slider');
-const volumeSlider = document.getElementById('volume-slider');
-const currentTimeDisplay = document.getElementById('current-time');
-const durationDisplay = document.getElementById('duration-time');
+const nextBtn = document.getElementById('next-btn');
+const prevBtn = document.getElementById('prev-btn');
+const trackName = document.querySelector('.track-name');
+const trackArtist = document.querySelector('.track-artist');
 
-// Play/Pause toggle
+// 1. Your list of songs
+const songs = [
+  { name: "Song One", artist: "Artist A", src: "Addison Rae Fame is a Gun (1).mp3" },
+  { name: "Song Two", artist: "Artist B", src: "Beyonce - Diva.mp3" },
+  { name: "Song Three", artist: "Artist C", src: "Breakin Dishes - Rihanna.mp3" }
+];
+
+let songIndex = 0; // Current song tracking
+
+// 2. Function to update the player info
+function loadSong(song) {
+  trackName.innerText = song.name;
+  trackArtist.innerText = song.artist;
+  audio.src = song.src;
+}
+
+// Initialize first song
+loadSong(songs[songIndex]);
+
+// 3. Play/Pause Logic
 playBtn.addEventListener('click', () => {
-    if (audio.paused) {
-        audio.play();
-        playBtn.textContent = '⏸';
-    } else {
-        audio.pause();
-        playBtn.textContent = '▶';
-    }
+  if (audio.paused) {
+    audio.play();
+    playBtn.textContent = '⏸';
+  } else {
+    audio.pause();
+    playBtn.textContent = '▶';
+  }
 });
 
-// Update seek slider and time as song plays
-audio.addEventListener('timeupdate', () => {
-    const position = audio.currentTime / audio.duration;
-    seekSlider.value = position * 100;
-    
-    // Format time (MM:SS)
-    let curMins = Math.floor(audio.currentTime / 60);
-    let curSecs = Math.floor(audio.currentTime - curMins * 60);
-    currentTimeDisplay.textContent = `${curMins}:${curSecs < 10 ? '0' + curSecs : curSecs}`;
+// 4. Next Song Logic
+nextBtn.addEventListener('click', () => {
+  songIndex++;
+  if (songIndex > songs.length - 1) songIndex = 0; // Loop to start
+  loadSong(songs[songIndex]);
+  audio.play();
+  playBtn.textContent = '⏸';
 });
 
-// Seek when user drags slider
-seekSlider.addEventListener('input', () => {
-    const seekTo = audio.duration * (seekSlider.value / 100);
-    audio.currentTime = seekTo;
+// 5. Previous Song Logic
+prevBtn.addEventListener('click', () => {
+  songIndex--;
+  if (songIndex < 0) songIndex = songs.length - 1; // Loop to end
+  loadSong(songs[songIndex]);
+  audio.play();
+  playBtn.textContent = '⏸';
 });
 
-// Volume control
-volumeSlider.addEventListener('input', () => {
-    audio.volume = volumeSlider.value / 100;
-});
-
-// Load duration once metadata is ready
-audio.addEventListener('loadedmetadata', () => {
-    let durMins = Math.floor(audio.duration / 60);
-    let durSecs = Math.floor(audio.duration - durMins * 60);
-    durationDisplay.textContent = `${durMins}:${durSecs < 10 ? '0' + durSecs : durSecs}`;
-});
+// 6. AUTO-PLAY NEXT (Optional but recommended)
+audio.onended = () => {
+  nextBtn.click(); // Just simulates a click on the "next" button
+};
 
     </script>
 </body>
