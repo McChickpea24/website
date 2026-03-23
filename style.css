@@ -1,0 +1,279 @@
+/* 1. FIXED FONT IMPORT */
+@import url('https://fonts.googleapis.com');
+
+/* 2. VARIABLES & DARK MODE LOGIC */
+:root {
+    --bg-color: #F9F6C4;
+    --text-color: #1a1a1a;
+    --card-bg: #ffffff;
+    --pink-bg: #FE9EC7; /* Pink for Light Mode */
+    --sky-bg: #89D4FF;
+    --blue-bg: #44ACFF;
+    --dark: #1a1a1a;
+}
+
+body.dark-mode {
+    --bg-color: #1a1a1a;
+    --text-color: #F9F6C4;
+    --card-bg: #2d2d2d;
+    --pink-bg: #8c4a65; /* Darker Pink for Dark Mode */
+    --sky-bg: #3b5d70;  /* Darker Sky for Dark Mode */
+    --blue-bg: #1e4a6e;
+    --dark: #F9F6C4;
+}
+
+
+/* 3. RESET & BASE */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'DM Sans', sans-serif;
+    line-height: 1.6;
+    text-align: center;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* 4. THEME TOGGLE UI (Top of page)*/ 
+.theme-switch-wrapper {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    padding: 15px;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+}
+
+.theme-btn {
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 50px;
+    border: 2px solid var(--dark);
+    background: var(--card-bg);
+    color: var(--text-color);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+/* 5. HEADINGS */
+h1, h2, h3 {
+    font-family: 'Climate Crisis', sans-serif;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 1.5rem;
+    line-height: 1.1;
+}
+
+h1 { font-size: clamp(3rem, 10vw, 6rem); }
+h2 { font-size: clamp(2rem, 6vw, 4rem); color: var(--pink); }
+
+/* 6. THE BUTTON (Your Original Styling) */
+.btn {
+    display: inline-block;
+    margin-top: 2rem;
+    padding: 1rem 2.5rem;
+    font-family: 'Climate Crisis', sans-serif;
+    background-color: var(--pink-bg);
+    color: white;
+    text-decoration: none;
+    border-radius: 50px;
+    border: 3px solid var(--dark); /* Linked to theme */
+    box-shadow: 8px 8px 0px var(--dark); /* Linked to theme */
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: pointer;
+}
+
+.btn:hover {
+    transform: scale(1.1) rotate(-3deg);
+    background-color: var(--sky-bg);
+    box-shadow: 12px 12px 0px var(--dark);
+    color: var(--text-color);
+}
+
+/* 7. LAYOUT & EFFECTS */
+section {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    position: relative;
+    background-color: var(--bg-color); /* Default */
+    transition: background-color 0.3s;
+}
+
+/* Specific Section Colors that respond to Dark Mode */
+.bg-pink { background-color: var(--pink-bg); }
+.bg-sky  { background-color: var(--sky-bg); }
+.bg-blue { background-color: var(--blue-bg); color: white; }
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+}
+
+.floating-box {
+    background: var(--card-bg);
+    padding: 3rem;
+    border-radius: 30px;
+    box-shadow: 20px 20px 0px var(--blue);
+    border: 3px solid var(--dark);
+    max-width: 600px;
+    animation: float 4s ease-in-out infinite;
+}
+
+.scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 900;
+    letter-spacing: 2px;
+    color: var(--text-color);
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-10px); }
+}
+
+/* Container for the waves */
+.ocean {
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  background: transparent;
+}
+
+.waves {
+  position: relative;
+  width: 100%;
+  height: 15vh; /* Height of the wave line */
+  margin-bottom: -7px; /* Fixes tiny gaps at the bottom */
+  min-height: 100px;
+  max-height: 150px;
+}
+
+/* Animation for the wave layers */
+.parallax > use {
+  animation: move-forever 25s cubic-bezier(.55,.5,.45,.5) infinite;
+}
+
+/* Different speeds for each layer */
+.parallax > use:nth-child(1) { animation-delay: -2s; animation-duration: 7s; }
+.parallax > use:nth-child(2) { animation-delay: -3s; animation-duration: 10s; }
+.parallax > use:nth-child(3) { animation-delay: -4s; animation-duration: 13s; }
+.parallax > use:nth-child(4) { animation-delay: -5s; animation-duration: 20s; }
+
+@keyframes move-forever {
+  0% { transform: translate3d(-90px, 0, 0); }
+  100% { transform: translate3d(85px, 0, 0); }
+}
+
+/* DARK MODE FIX: Make the water match your theme background */
+body.dark-mode .parallax > use:nth-child(4) {
+  fill: var(--bg-color); /* The solid bottom wave matches the background */
+}
+body.dark-mode .parallax > use:nth-child(1),
+body.dark-mode .parallax > use:nth-child(2),
+body.dark-mode .parallax > use:nth-child(3) {
+  fill: rgba(255, 255, 255, 0.1); /* Subtle highlights in dark mode */
+}
+
+/* This container must wrap your whole page content or be a sibling to your sections */
+.scroll-track {
+    position: absolute;
+    top: 0;
+    right: 30px; /* Distance from the right edge */
+    height: 100%; /* Matches total height of all sections */
+    width: 60px;
+    pointer-events: none; /* Allows clicking things behind the track */
+}
+@keyframes glow-pulse {
+    0% { text-shadow: 0 0 5px var(--glow-color); }
+    50% { text-shadow: 0 0 20px var(--glow-color), 0 0 30px var(--glow-color); }
+    100% { text-shadow: 0 0 5px var(--glow-color); }
+}
+.glass-widget {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    padding: 15px 25px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: bold;
+    color: var(--text-color);
+    letter-spacing: 2px;
+    z-index: 1000;
+}
+
+#heart-cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    font-size: 24px; /* Adjust size here */
+    pointer-events: none; /* Crucial: allows clicking through the heart */
+    z-index: 999999;
+    user-select: none;
+    /* This makes the movement feel "buttery" smooth */
+    transition: transform 0.1s linear; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Optional: Make the heart grow when hovering over any button or link */
+.heart-grow {
+    transform: scale(2);
+    filter: drop-shadow(0 0 10px var(--pink));
+}
+
+/* Container to align them side-by-side */
+.gallery-container {
+    display: flex;
+    flex-wrap: wrap; /* Allows them to wrap to the next line on mobile */
+    justify-content: center;
+    gap: 30px; /* Space between photos */
+    padding: 50px;
+}
+
+.polaroid {
+    background: white;
+    padding: 15px 15px 40px 15px;
+    border: 3px solid var(--dark);
+    box-shadow: 10px 10px 0px var(--pink);
+    transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    width: 220px; /* Adjusted size to fit more */
+}
+
+/* Different tilts for variety */
+.tilt-left { transform: rotate(-4deg); }
+.tilt-right { transform: rotate(4deg); }
+
+.polaroid:hover {
+    transform: rotate(0deg) scale(1.1); /* Straightens and grows */
+    box-shadow: 15px 15px 0px var(--sky);
+    z-index: 10; /* Brings the hovered one to the front */
+}
+
+.polaroid img { 
+    width: 100%; 
+    height: 180px; 
+    object-fit: cover; /* Keeps images from looking squished */
+    border: 2px solid var(--dark); 
+}

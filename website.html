@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fiona's Website</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/gif" href="___9_-removebg-preview (2).png">
+    <style>
+    </style>
+</head>
+<body>
+    <div id="heart-cursor">❤︎</div>
+    <div class="theme-switch-wrapper">
+    <button id="theme-toggle" class="theme-btn">🌙 Switch to Dark Mode</button>
+    </div>
+    <div id="digital-clock" class="glass-widget">00:00:00</div>
+    <section class="bg-pink">
+        <h1>Welcome to my website!</h1>
+        <p>My name is Fiona!</p>
+        <a href="#next" class="btn" style="font-family: Verdana, Geneva, Tahoma, sans-serif;color: black;">I want to make a website too</a>
+        <div class="scroll-hint">SCROLL ↓</div>
+    </section>
+    <section>
+        <h2>aesthetic pictures</h2>
+      <div class="gallery-container">
+    <!-- Polaroid 1 -->
+    <div class="polaroid tilt-left">
+        <img src="___9_-removebg-preview (2).png" alt="Summer">
+        <p class="caption">martini club</p>
+    </div>
+
+    <!-- Polaroid 2 -->
+    <div class="polaroid tilt-right">
+        <img src="red_bow_nobg.png" alt="Sky">
+        <p class="caption">random aesthetically pleasing bow</p>
+    </div>
+
+    <!-- Polaroid 3 -->
+    <div class="polaroid tilt-left">
+        <img src="_ (6).jpeg" alt="Blue">
+        <p class="caption">mon cheri?</p>
+    </div>
+</div>
+    </section>
+
+    <section id="next" class="bg-sky">
+        <div class="floating-box">
+            <h2>Email me</h2>
+            <p>contact me at fionayao11795@gmail.com</p>
+        </div>
+
+        <div class="ocean">
+  <svg class="waves" xmlns="http://www.w3.org" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
+    <defs>
+      <path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" />
+    </defs>
+    <g class="parallax">
+      <use href="#gentle-wave" x="48" y="0" fill="rgba(255,255,255,0.7" />
+      <use href="#gentle-wave" x="48" y="3" fill="rgba(255,255,255,0.5)" />
+      <use href="#gentle-wave" x="48" y="5" fill="rgba(255,255,255,0.3)" />
+      <use href="#gentle-wave" x="48" y="7" fill="#fff" />
+    </g>
+  </svg>
+</div>
+
+
+    <script>
+    const toggleBtn = document.getElementById('theme-toggle');
+const body = document.body;
+
+toggleBtn.addEventListener('click', () => {
+    body.classList.toggle('dark-mode');
+    
+    // Update button text based on mode
+    if (body.classList.contains('dark-mode')) {
+        toggleBtn.innerText = "☀️ Switch to Light Mode";
+    } else {
+        toggleBtn.innerText = "🌙 Switch to Dark Mode";
+    }
+});
+setInterval(() => {
+    document.getElementById('digital-clock').innerText = new Date().toLocaleTimeString();
+}, 1000);
+
+const heart = document.getElementById('heart-cursor');
+
+    document.addEventListener('mousemove', (e) => {
+        // We subtract 12 (half of the 24px font size) to center it exactly
+        heart.style.transform = `translate(${e.clientX - 12}px, ${e.clientY - 12}px)`;
+    });
+
+    // Optional: Make it react to buttons
+    document.querySelectorAll('button, a, .btn').forEach(elem => {
+        elem.addEventListener('mouseenter', () => heart.classList.add('heart-grow'));
+        elem.addEventListener('mouseleave', () => heart.classList.remove('heart-grow'));
+    });
+    // Add this inside your existing <script>
+document.querySelectorAll('.polaroid').forEach(item => {
+    item.addEventListener('mouseenter', () => heart.style.fontSize = "40px");
+    item.addEventListener('mouseleave', () => heart.style.fontSize = "24px");
+});
+    </script>
+</body>
+</html>
