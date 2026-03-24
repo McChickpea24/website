@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="img/martini.png">
+    <title>Chat</title>
+    
+    <!-- 1. LOAD SUPABASE LIBRARY -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+
+    <style>
+        /* 2. MODERN PINK & BLUE STYLES */
+        :root {
+            --pink: #FE9EC7;
+            --sky: #89D4FF;
+            --cream: #F9F6C4;
+            --dark: #1a1a1a;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background-color: var(--cream);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .chat-card {
+            width: 380px;
+            height: 550px;
+            background: white;
+            border: 4px solid var(--dark);
+            border-radius: 25px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 12px 12px 0px var(--dark);
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: var(--pink);
+            padding: 20px;
+            border-bottom: 4px solid var(--dark);
+            font-weight: 900;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+
+        #chat-box {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background-image: radial-gradient(var(--sky) 0.5px, transparent 0.5px);
+            background-size: 15px 15px; /* Polka dot pattern */
+        }
+
+        /* Message Bubbles */
+        .msg {
+            padding: 10px 15px;
+            border-radius: 15px;
+            border: 2px solid var(--dark);
+            max-width: 75%;
+            font-size: 14px;
+            word-wrap: break-word;
+        }
+
+        .mine {
+            align-self: flex-end;
+            background: var(--pink);
+            box-shadow: -4px 4px 0px var(--dark);
+        }
+
+        .theirs {
+            align-self: flex-start;
+            background: var(--sky);
+            box-shadow: 4px 4px 0px var(--dark);
+        }
+
+        /* Input Area */
+        .input-area {
+            padding: 15px;
+            display: flex;
+            gap: 10px;
+            border-top: 4px solid var(--dark);
+            background: white;
+        }
+
+        input {
+            flex: 1;
+            padding: 10px 15px;
+            border-radius: 50px;
+            border: 2px solid var(--dark);
+            outline: none;
+        }
+
+        .send-btn {
+            background: var(--dark);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: 0.2s;
+        }
+
+        .send-btn:hover { transform: scale(1.1); }
+
+    #heart-cursor {
+        position: fixed;
+        top: 0;
+        left: 0;
+        font-size: 24px; /* Adjust size here */
+        pointer-events: none; /* Crucial: allows clicking through the heart */
+        z-index: 999999;
+        user-select: none;
+        /* This makes the movement feel "buttery" smooth */
+        transition: transform 0.1s linear; 
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    /* Optional: Make the heart grow when hovering over any button or link */
+    .heart-grow {
+        transform: scale(2);
+        filter: drop-shadow(0 0 10px var(--pink));
+    }
+    </style>
+</head>
+<body>
+    <div id="heart-cursor">❤︎</div>
+
+
+<div class="chat-card">
+    <div class="chat-header">CHAT</div>
+    <div id="chat-box">
+        <!-- Messages appear here -->
+    </div>
+    <div class="input-area">
+        <input type="text" id="msg-input" placeholder="Say something...">
+        <button class="send-btn" onclick="sendMsg()">➤</button>
+    </div>
+</div>
+
+<script>
+    // 1. CONFIG (Paste your keys here)
+    const SUPABASE_URL = 'https://rgjhqpbmsvahmlwrpcpm.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJnamhxcGJtc3ZhaG1sd3JwY3BtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzMTI1MDQsImV4cCI6MjA4OTg4ODUwNH0.0k8BpGlgB85KCF2BtYre3ZOcI5JonCCvAm4ijMX4Cjc';
+
+    // FIX 1: Remove "lib." because the CDN uses "supabase" directly
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // FIX 2: Define these at the TOP so they are initialized before any function runs
+    const chatBox = document.getElementById('chat-box');
+    const input = document.getElementById('msg-input');
+
+    // Create a unique ID for you
+    const myID = localStorage.getItem('chatUserID') || Math.random().toString(36).substring(7);
+    localStorage.setItem('chatUserID', myID);
+
+    // LOAD MESSAGES
+    async function loadMessages() {
+        const { data, error } = await _supabase
+            .from('messages')
+            .select('*')
+            .order('created_at', { ascending: true });
+
+        if (error) {
+            console.error("Error loading:", error.message);
+            return;
+        }
+
+        chatBox.innerHTML = '';
+        data.forEach(m => {
+            const div = document.createElement('div');
+            // If sender ID matches yours, it goes on the right
+            div.className = `msg ${m.sender === myID ? 'mine' : 'theirs'}`;
+            div.innerText = m.content;
+            chatBox.appendChild(div);
+        });
+        
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    // SEND MESSAGE
+    async function sendMsg() {
+        // Now 'input' is already initialized at the top, so no more error!
+        const text = input.value.trim(); 
+        if (!text) return;
+
+        const { error } = await _supabase
+            .from('messages')
+            .insert([{ content: text, sender: myID }]);
+
+        if (error) {
+            console.error("Send Error:", error.message);
+            alert("Check if you ran the SQL script in Supabase!");
+        } else {
+            input.value = '';
+            loadMessages();
+        }
+    }
+
+    // Refresh every 3 seconds
+    setInterval(loadMessages, 3000);
+    loadMessages();
+
+        const heart = document.getElementById('heart-cursor');
+
+    // 1. Follow Mouse
+    document.addEventListener('mousemove', (e) => {
+        heart.style.transform = `translate(${e.clientX - 12}px, ${e.clientY - 12}px)`;
+    });
+
+    // 2. Grow on Hover
+    document.querySelectorAll('button, input, .msg').forEach(elem => {
+        elem.addEventListener('mouseenter', () => heart.classList.add('heart-grow'));
+        elem.addEventListener('mouseleave', () => heart.classList.remove('heart-grow'));
+    });
+</script>
+
+</body>
+</html>
